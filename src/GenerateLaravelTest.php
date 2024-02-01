@@ -2,8 +2,8 @@
 
 namespace Simplemachine\GenerateLaravelTest;
 
-class GenerateLaravelTest {
-
+class GenerateLaravelTest
+{
     public static function getEndpoint(): string
     {
         if (app()->isProduction()) {
@@ -12,5 +12,4 @@ class GenerateLaravelTest {
             return 'https://simplemachine.test/api/generate-laravel-test';
         }
     }
-
 }

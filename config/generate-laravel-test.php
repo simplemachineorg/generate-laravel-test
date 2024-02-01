@@ -35,5 +35,4 @@ return [
     */
     'draft_test_file_path' => env('GENERATE_TEST_FILE_PATH', 'tests/Feature/_draft'),
 
-
 ];
