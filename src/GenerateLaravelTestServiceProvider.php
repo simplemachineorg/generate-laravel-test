@@ -4,7 +4,7 @@ namespace Simplemachine\GenerateLaravelTest;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Simplemachine\GenerateLaravelTest\Commands\GenerateLaravelTestCommand;
+use Simplemachine\GenerateLaravelTest\Commands\GenerateTestCommand;
 
 class GenerateLaravelTestServiceProvider extends PackageServiceProvider
 {
@@ -17,9 +17,7 @@ class GenerateLaravelTestServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('generate-laravel-test')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_generate-laravel-test_table')
-            ->hasCommand(GenerateLaravelTestCommand::class);
+            ->hasConfigFile('generate-laravel-test')
+            ->hasCommand(GenerateTestCommand::class);
     }
 }

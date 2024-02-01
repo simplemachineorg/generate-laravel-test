@@ -1,0 +1,5 @@
+{
+    "notes": "The problem is to write a PEST test to check the functionality of the CountTokens action in the Laravel application.",
+    "test": "it('counts the tokens with default model', function () {$action = new \\App\\Actions\\CountTokens();$result = $action->execute('This is a test string.');expect($result)->toBe(5)});it('counts the tokens with custom model', function () {$action = new \\App\\Actions\\CountTokens();$result = $action->execute('This is a test string.', 'gpt-4');expect($result)->toBe(5);});",
+    "response_code": 200
+}
