@@ -5,80 +5,16 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/simplemachineorg/generate-laravel-test/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/simplemachineorg/generate-laravel-test/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/simplemachineorg/generate-laravel-test.svg?style=flat-square)](https://packagist.org/packages/simplemachineorg/generate-laravel-test)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+## Package
 
-## Support us
+This package is a work in progress. It allows you to connect to https://simplemachine.org/tools/generate-laravel-test through the command line.
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/generate-laravel-test.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/generate-laravel-test)
+You can type `php artisan generate:test` and get a list of files to generate.
 
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
+The test is generated using GPT-4, and saved to your tests folder in a _draft folder. But all code is commented out, so you can choose to uncomment what you want.
 
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+Every test requires some adjustment, since ChatGPT doesn't know everything about your app. But I find it's often a helpful starting point for "what to test" and the basic contours of a test plan.
 
-## Installation
+## Using this package
 
-You can install the package via composer:
-
-```bash
-composer require simplemachineorg/generate-laravel-test
-```
-
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="generate-laravel-test-migrations"
-php artisan migrate
-```
-
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="generate-laravel-test-config"
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="generate-laravel-test-views"
-```
-
-## Usage
-
-```php
-$generateLaravelTest = new Simplemachine\GenerateLaravelTest();
-echo $generateLaravelTest->echoPhrase('Hello, Simplemachine!');
-```
-
-## Testing
-
-```bash
-composer test
-```
-
-## Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
-
-## Credits
-
-- [iambateman](https://github.com/simplemachineorg)
-- [All Contributors](../../contributors)
-
-## License
-
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+To use this package, you'll need a Simple Machine API key, which you can get at https://simplemachine.org/profile.
