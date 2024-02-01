@@ -7,10 +7,10 @@ uses(TestCase::class)->in(__DIR__);
 function fixture(string $name): array
 {
     $file = file_get_contents(
-        filename: __DIR__ . "/Fixtures/$name.json",
+        filename: __DIR__."/Fixtures/$name.json",
     );
 
-    if(! $file) {
+    if (! $file) {
         throw new InvalidArgumentException(
             message: "Cannot find fixture: [$name] at tests/Fixtures/$name.json",
         );

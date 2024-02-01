@@ -2,9 +2,9 @@
 
 namespace Simplemachine\GenerateLaravelTest;
 
+use Simplemachine\GenerateLaravelTest\Commands\GenerateTestCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Simplemachine\GenerateLaravelTest\Commands\GenerateTestCommand;
 
 class GenerateLaravelTestServiceProvider extends PackageServiceProvider
 {
