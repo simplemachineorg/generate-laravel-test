@@ -30,7 +30,7 @@ class GenerateTestCommand extends Command
             $response = Http::withToken($token)
                 ->timeout(75)
                 ->withoutVerifying() // was causing SSL issue. @TODO remove in prod.
-                ->withBody(json_encode(['code' => $file_string]))
+                ->withBody(json_encode(['code' => $file_string]), 'application/json')
                 ->acceptJson()
                 ->post(GenerateLaravelTest::getEndpoint());
 
