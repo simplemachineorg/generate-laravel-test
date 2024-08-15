@@ -44,7 +44,7 @@ class GenerateTestCommand extends Command
                 ->replaceMatches('/^/m', '//') // comment out all code.
                 ->replace('&gt;', '>')
                 ->remove('<?php')
-                ->prepend("<?php\n\n\n");
+                ->prepend("<?php\n");
 
             // Place the file in the drafts folder.
             $test_directory = base_path(config('generate-laravel-test.draft_test_file_path', 'tests/_draft'));
