@@ -25,7 +25,7 @@ GENERATE_TEST_OPENAI_API_KEY=
 
 Optionally, you can publish the config file using... 
 ```
-php artisan vendor:publish --tag=":generate_laravel_test-config"
+php artisan vendor:publish --tag="generate_laravel_test-config"
 ```
 
 ## Using this package
@@ -33,6 +33,7 @@ Issue this command to use AI to generate a test...
 ```
 php artisan generate:test
 ```
+It will ask you to search for a PHP file in your code base and use that to generate the test.
 
 ## Adding custom notes about the app
 You can create a file which renders custom notes about the app in every request, so that the test generator is more intelligent about your specific setup. By default, create a view inside `resources/views/utility/generate-test-custom-notes.blade.php` and write your notes. You can optionally change the location of the file in the config.

@@ -43,7 +43,7 @@ return [
     | The default OpenAI model used for creating tests.
     |
     */
-    'default_model' => env('GENERATE_TEST_DEFAULT_MODEL', 'gpt-4o'),
+    'default_model' => env('GENERATE_TEST_DEFAULT_MODEL', 'gpt-4o-mini'),
 
     /*
     |--------------------------------------------------------------------------
