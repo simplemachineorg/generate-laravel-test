@@ -43,8 +43,7 @@ class GenerateTestCommand extends Command
              */
             $response = (new RunPrompt)->handle(
                 'generate_laravel_test::generate-laravel-test-prompt',
-                ['code' => $this->code, 'further_testing_note' => $this->further_testing_note],
-                'gpt-4-0125-preview'
+                ['code' => $this->code, 'further_testing_note' => $this->further_testing_note]
             );
 
             $new_test_file = $response->json()->test;
