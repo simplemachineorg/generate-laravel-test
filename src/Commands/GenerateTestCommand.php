@@ -5,50 +5,68 @@ namespace Simplemachine\GenerateLaravelTest\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Http;
-use Simplemachine\GenerateLaravelTest\GenerateLaravelTest;
-
+use Simplemachine\GenerateLaravelTest\Actions\RunPrompt;
 use function Laravel\Prompts\search;
+use function Laravel\Prompts\text;
 
-class GenerateTestCommand extends Command
-{
+class GenerateTestCommand extends Command {
+
     public $signature = 'generate:test {path?}';
 
     public $description = 'Use AI to generate a Pest test.';
 
+    public string $code;
+    public string $test;
+    public string $further_testing_note;
+
     public function handle(): int
     {
         try {
-            if (! $token = config('generate-laravel-test.api_key')) {
-                throw new \Exception('No Simple Machine API Key Found');
-            }
 
+            /**
+             * Get the file for the code (usually by searching for it)
+             */
             $path = $this->argument('path') ?? $this->searchForPath();
-            $file_string = File::get($path);
+            $this->code = File::get($path);
             $file = new \SplFileInfo($path);
 
-            $response = Http::withToken($token)
-                ->timeout(75)
-                ->withoutVerifying() // was causing SSL issue. @TODO remove in prod.
-                ->withBody(json_encode(['code' => $file_string]), 'application/json')
-                ->acceptJson()
-                ->post(GenerateLaravelTest::getEndpoint());
+            /**
+             * Ask for notes.
+             */
+            $this->further_testing_note = text("Any specific testing notes? (optional)");
 
-            if ($response->failed()) {
-                throw new \Exception('Test failed to generate.');
+            /**
+             * Run AI to generate the test
+             */
+            $response = (new RunPrompt())->handle(
+                'generate_laravel_test::generate-laravel-test-prompt',
+                ['code' => $this->code, 'further_testing_note' => $this->further_testing_note],
+                'gpt-4-0125-preview'
+            );
+
+            $new_test_file = $response->json()->test;
+
+            /**
+             * Basic file fixes
+             */
+            $new_test_file = str($new_test_file)
+                ->remove('<?php')
+                ->prepend("<?php\n")
+                ->replace('&gt;', '>');
+
+            /**
+             * Comment out
+             */
+            if (config('generate-laravel-test.comment_out')) {
+                $new_test_file = $new_test_file->replaceMatches('/^/m', '//');
             }
 
-            $test_file = json_decode($response->body())->test;
 
-            $commented_out_file = str($test_file)
-                ->replaceMatches('/^/m', '//') // comment out all code.
-                ->replace('&gt;', '>')
-                ->remove('<?php')
-                ->prepend("<?php\n");
-
-            // Place the file in the drafts folder.
+            /**
+             * Place the file in the drafts folder.
+             */
             $test_directory = base_path(config('generate-laravel-test.draft_test_file_path', 'tests/_draft'));
-            if (! File::isDirectory($test_directory)) {
+            if (!File::isDirectory($test_directory)) {
                 File::makeDirectory($test_directory, 0755, true);
             }
 
@@ -59,20 +77,26 @@ class GenerateTestCommand extends Command
                 ->title()
                 ->append('Test.php');
 
-            $test_path = $test_directory.'/'.$file_name;
+            $test_path = $test_directory . '/' . $file_name;
             File::put(
                 $test_path,
-                $commented_out_file
+                $new_test_file
             );
 
-            $this->comment('Done!');
-            $this->comment("We saved your draft test in {$test_path}");
-            $this->comment("(note: it's commented out to ensure it doesn't conflict.)");
+            $this->comment("Done! We saved your draft test in {$test_path}");
+
+            if (config('generate-laravel-test.comment_out')) {
+                $this->comment("(note: it's commented out to ensure it doesn't break anything.)");
+            } else {
+                $this->comment("(note: it's not commented out, so things could break.)");
+            }
 
             return self::SUCCESS;
+
         } catch (\Exception $e) {
+
             info($e);
-            $this->warn('Something went wrong.');
+            $this->warn('Oops! Something went wrong generating a test. The error message is below.');
             $this->comment($e->getMessage());
 
             return self::FAILURE;
@@ -87,14 +111,18 @@ class GenerateTestCommand extends Command
          */
         $files = collect(File::allFiles(app_path()));
 
-        // If using Livewire, add those in.
+        /**
+         * If using Livewire, add those in.
+         */
         $livewire_path = config('livewire.view_path');
         if ($livewire_path && File::isDirectory($livewire_path)) {
             $files = $files->merge(File::allFiles($livewire_path));
         }
 
-        // Only get PHP files.
-        $files = $files->filter(fn (\SplFileInfo $file) => $file->getExtension() === 'php');
+        /**
+         * Only get PHP files.
+         */
+        $files = $files->filter(fn(\SplFileInfo $file) => $file->getExtension() === 'php');
 
         /**
          * @var int $file_offset
@@ -102,7 +130,7 @@ class GenerateTestCommand extends Command
          */
         $file_offset = (int) search(
             'Search for file',
-            fn (string $value) => strlen($value) > 0
+            fn(string $value) => strlen($value) > 0
                 ? $this->filterFiles($files, $value)
                 : []
         );
@@ -119,10 +147,11 @@ class GenerateTestCommand extends Command
     protected function filterFiles(Collection $files, $value): array
     {
         return $files
-            ->map(fn (\SplFileInfo $file) => str($file->getPathname())->remove(app_path())->toString()) // just show the relative path
+            ->map(fn(\SplFileInfo $file) => str($file->getPathname())->remove(app_path())->toString()) // just show the relative path
             ->filter(function (string $path) use ($value) {
                 return str($path)->contains($value);
             })
             ->all();
     }
+
 }

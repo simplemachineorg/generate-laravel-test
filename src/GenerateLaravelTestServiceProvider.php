@@ -16,8 +16,9 @@ class GenerateLaravelTestServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('generate-laravel-test')
+            ->name('generate_laravel_test')
             ->hasConfigFile('generate-laravel-test')
+            ->hasViews()
             ->hasCommand(GenerateTestCommand::class);
     }
 }
