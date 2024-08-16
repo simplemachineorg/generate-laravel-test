@@ -6,15 +6,12 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Simplemachine\GenerateLaravelTest\DTO\AIResponse;
 
-class RunPrompt {
-
-
+class RunPrompt
+{
     /**
      * We usually want JSON, but this is just in case we don't.
      */
-    public function __construct(public ?bool $json_response = true)
-    {
-    }
+    public function __construct(public ?bool $json_response = true) {}
 
     /**
      * By default, we send an entire Blade view, rendered out. It's just
@@ -56,13 +53,19 @@ class RunPrompt {
     public function requestOpenAi(Collection|string $prompt, ?string $model = null): AIResponse
     {
         // Check if the request is a string and format into an array, if so.
-        if (is_string($prompt)) $prompt = collect([['role' => 'user', 'content' => $prompt]]);
+        if (is_string($prompt)) {
+            $prompt = collect([['role' => 'user', 'content' => $prompt]]);
+        }
 
         // Set up the model
-        if (!$model) $model = config('generate-laravel-test.default_model');
+        if (! $model) {
+            $model = config('generate-laravel-test.default_model');
+        }
 
         // Make sure there's an API Key.
-        if (!config('generate-laravel-test.open_ai_api_key')) throw new \Exception('No API Key Found');
+        if (! config('generate-laravel-test.open_ai_api_key')) {
+            throw new \Exception('No API Key Found');
+        }
 
         // Set up the response body
         $body = [
@@ -71,7 +74,9 @@ class RunPrompt {
         ];
 
         // add JSON, if that's our return value (set in the constructor).
-        if ($this->json_response) $body['response_format'] = ['type' => 'json_object'];
+        if ($this->json_response) {
+            $body['response_format'] = ['type' => 'json_object'];
+        }
 
         // Give it a while.
         set_time_limit(75);
@@ -86,7 +91,9 @@ class RunPrompt {
             ->post('https://api.openai.com/v1/chat/completions');
 
         // Failure case
-        if ($result->status() != 200) throw new \Exception($result->body());
+        if ($result->status() != 200) {
+            throw new \Exception($result->body());
+        }
 
         $object = json_decode($result->body());
 
@@ -103,5 +110,4 @@ class RunPrompt {
     {
         return view($view_name, $data)->render();
     }
-
 }

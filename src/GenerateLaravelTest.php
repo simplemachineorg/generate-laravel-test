@@ -2,7 +2,4 @@
 
 namespace Simplemachine\GenerateLaravelTest;
 
-class GenerateLaravelTest
-{
-
-}
+class GenerateLaravelTest {}
