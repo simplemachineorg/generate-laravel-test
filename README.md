@@ -9,26 +9,30 @@
 This package is a work in progress and may have breaking changes.
 
 ## Overview
-It allows you to quickly create Laravel tests using GPT. The test is generated using GPT-4o and saved to your tests folder in a _draft folder.
+It make it easy to quickly create Laravel tests using GPT. The package sends your code file to GPT along with some prompt instructions and saves a draft test in a _draft folder.
 
-Every test still requires some adjustment, since GPT doesn't know everything about your app, but it's a helpful starting point. I find I write many more tests when the initial work is done for me, and all I need to do is adjust the particulars.
+Every generated test needs adjustment since GPT doesn't know everything about the app, but it's a helpful starting point. In practice, it's easier to write more tests when the scaffolding work is automated.
 
 ## Installation
-1. Run `composer require simplemachineorg/generate-laravel-test`
-2. Set `GENERATE_TEST_OPENAI_API_KEY` in your .env to your OpenAI Key.
-3. Optionally, you can publish the config file using `php artisan vendor:publish --tag=":generate_laravel_test-config"`
+Issue this command...
+```
+composer require simplemachineorg/generate-laravel-test`
+```
+Then, set `GENERATE_TEST_OPENAI_API_KEY` in your .env to your OpenAI Key. 
+
+Optionally, you can publish the config file using... 
+```
+php artisan vendor:publish --tag=":generate_laravel_test-config"
+```
 
 ## Using this package
-1. Run `php artisan generate:test` 
-2. Search for a PHP file that needs a test.
-3. Add custom test notes (optional)
-4. AI will generate the test!
-
+Issue this command to use AI to generate a test...
+```
+php artisan generate:test
+```
 
 ## Adding custom notes about the app
-You can create a file which renders custom notes about the app in every request, so that the test generator is more intelligent about your specific setup. By default, create a view inside `resources/views/utility/generate-test-custom-notes.blade.php` and write your notes.
-
-You can change the location of the file in the config, if you'd like.
+You can create a file which renders custom notes about the app in every request, so that the test generator is more intelligent about your specific setup. By default, create a view inside `resources/views/utility/generate-test-custom-notes.blade.php` and write your notes. You can optionally change the location of the file in the config.
 
 ## Publishing Config (optional)
 ```
