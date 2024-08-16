@@ -18,7 +18,10 @@ Issue this command...
 ```
 composer require simplemachineorg/generate-laravel-test`
 ```
-Then, set `GENERATE_TEST_OPENAI_API_KEY` in your .env to your OpenAI Key. 
+Then, set your API Key in env...
+```
+GENERATE_TEST_OPENAI_API_KEY=
+```
 
 Optionally, you can publish the config file using... 
 ```
