@@ -6,17 +6,20 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Simplemachine\GenerateLaravelTest\Actions\RunPrompt;
+
 use function Laravel\Prompts\search;
 use function Laravel\Prompts\text;
 
-class GenerateTestCommand extends Command {
-
+class GenerateTestCommand extends Command
+{
     public $signature = 'generate:test {path?}';
 
     public $description = 'Use AI to generate a Pest test.';
 
     public string $code;
+
     public string $test;
+
     public string $further_testing_note;
 
     public function handle(): int
@@ -33,12 +36,12 @@ class GenerateTestCommand extends Command {
             /**
              * Ask for notes.
              */
-            $this->further_testing_note = text("Any specific testing notes? (optional)");
+            $this->further_testing_note = text('Any specific testing notes? (optional)');
 
             /**
              * Run AI to generate the test
              */
-            $response = (new RunPrompt())->handle(
+            $response = (new RunPrompt)->handle(
                 'generate_laravel_test::generate-laravel-test-prompt',
                 ['code' => $this->code, 'further_testing_note' => $this->further_testing_note],
                 'gpt-4-0125-preview'
@@ -61,12 +64,11 @@ class GenerateTestCommand extends Command {
                 $new_test_file = $new_test_file->replaceMatches('/^/m', '//');
             }
 
-
             /**
              * Place the file in the drafts folder.
              */
             $test_directory = base_path(config('generate-laravel-test.draft_test_file_path', 'tests/_draft'));
-            if (!File::isDirectory($test_directory)) {
+            if (! File::isDirectory($test_directory)) {
                 File::makeDirectory($test_directory, 0755, true);
             }
 
@@ -77,7 +79,7 @@ class GenerateTestCommand extends Command {
                 ->title()
                 ->append('Test.php');
 
-            $test_path = $test_directory . '/' . $file_name;
+            $test_path = $test_directory.'/'.$file_name;
             File::put(
                 $test_path,
                 $new_test_file
@@ -122,7 +124,7 @@ class GenerateTestCommand extends Command {
         /**
          * Only get PHP files.
          */
-        $files = $files->filter(fn(\SplFileInfo $file) => $file->getExtension() === 'php');
+        $files = $files->filter(fn (\SplFileInfo $file) => $file->getExtension() === 'php');
 
         /**
          * @var int $file_offset
@@ -130,7 +132,7 @@ class GenerateTestCommand extends Command {
          */
         $file_offset = (int) search(
             'Search for file',
-            fn(string $value) => strlen($value) > 0
+            fn (string $value) => strlen($value) > 0
                 ? $this->filterFiles($files, $value)
                 : []
         );
@@ -147,11 +149,10 @@ class GenerateTestCommand extends Command {
     protected function filterFiles(Collection $files, $value): array
     {
         return $files
-            ->map(fn(\SplFileInfo $file) => str($file->getPathname())->remove(app_path())->toString()) // just show the relative path
+            ->map(fn (\SplFileInfo $file) => str($file->getPathname())->remove(app_path())->toString()) // just show the relative path
             ->filter(function (string $path) use ($value) {
                 return str($path)->contains($value);
             })
             ->all();
     }
-
 }
